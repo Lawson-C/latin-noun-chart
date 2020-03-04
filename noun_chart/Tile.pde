@@ -1,7 +1,8 @@
 class Tile {
   PVector pos;
   String val = "";
-  private boolean select = false;
+  color c = 255;
+  boolean select = false;
 
   Tile(String val) {
     this.val = val;
@@ -40,7 +41,7 @@ class Tile {
   void setVal(String val) {
     this.val = val;
   }
-  
+
   void setSelect(boolean set) {
     this.select = set;
     isSelected = set;
@@ -75,13 +76,13 @@ class Tile {
 
   void display() {
     if (select) {
-      fill(255);
+      fill(c);
       rect(mouseX, mouseY, 100, 50);
       fill(0);
       textSize(25);
       text(getVal(), mouseX+15, mouseY+35);
     } else {
-      fill(255);
+      fill(c);
       rect(pos.x, pos.y, 100, 50);
       fill(0);
       textSize(25);

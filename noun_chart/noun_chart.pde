@@ -4,8 +4,8 @@ Tile[][] tileGroup = new Tile[8][10];
 Tile[][] complete = new Tile[8][10];
 Tile[][] tiles = new Tile[8][10];
 
-File endings = new File("C:\\Users\\lawso\\Desktop\\Processing Projects\\noun_chart\\data\\endings");
-File letters = new File("C:\\Users\\lawso\\Desktop\\Processing Projects\\noun_chart\\data\\conversion");
+File endings = new File("C:\\Users\\lawso\\OneDrive\\Documents\\github\\latin-noun-chart\\noun_chart\\data\\endings");
+File letters = new File("C:\\Users\\lawso\\OneDrive\\Documents\\github\\latin-noun-chart\\noun_chart\\data\\conversion");
 BufferedReader reader;
 BufferedReader endingReader;
 
@@ -93,6 +93,11 @@ void draw() {
       t.display();
     }
   }
+  fill(0);
+  rect(width/2 - 100, height/2 - 50, 200, 100);
+  fill(255);
+  textSize(50);
+  text("check", width/2 - 75, height/2 + 20);
 }
 
 void mousePressed() {
@@ -113,8 +118,6 @@ void mousePressed() {
   } else if (mouseX > width/2 - 400 && mouseX < width/2 + 400 && mouseY > height/2 - 350 && mouseY < height/2 - 100) {
     xSelect = (mouseX - (width/2 - 400)) / 100;
     ySelect = (mouseY - (height/2 - 350)) / 50;
-    System.out.println("x: " + xSelect + " y: " + ySelect);
-    System.out.println(tileGroup[xSelect][ySelect]);
     if (!tileGroup[xSelect][ySelect].val.equals("[ ]")) {
       int[] tileIndex = getTile(tiles, tileGroup[xSelect][ySelect]);
       tileGroup[xSelect][ySelect].val = "[ ]";
@@ -126,9 +129,7 @@ void mousePressed() {
     }
   } else if (mouseX > width/2 - 400 && mouseX < width/2 + 400 && mouseY > height/2 + 100 && mouseY < height/2 + 350) {
     xSelect = (int) (mouseX - (width/2 - 400)) / 100;
-    ySelect = (int) (mouseY - (height/2 + 100)) / 50 + tileGroup.length / 2;
-    System.out.println("x: " + xSelect + " y: " + ySelect);
-    System.out.println(tileGroup[xSelect][ySelect]);
+    ySelect = (int) (mouseY - (height/2 + 100)) / 50 + tileGroup.length / 2 + 1;
     if (!tileGroup[xSelect][ySelect].val.equals("[ ]")) {
       int[] tileIndex = getTile(tiles, tileGroup[xSelect][ySelect]);
       tileGroup[xSelect][ySelect].val = "[ ]";
@@ -140,7 +141,15 @@ void mousePressed() {
     }
   }
   if (xSelect > -1 && ySelect > -1) {
-    tiles[xSelect][ySelect].select = true;
+    tiles[xSelect][ySelect].setSelect(true);
+  }
+  if (!isSelected) {
+    if (mouseX > width/2 - 100 && mouseX < width/2 + 100 && mouseY > height/2 - 50 && mouseY < height/2 + 50) {
+      ArrayList<int[]> incorrect = checkCorrect();
+      for (int i = 0; i < incorrect.size(); i++) {
+        tiles[incorrect.get(i)[0]][incorrect.get(i)[1]].c = incorrect.get(i)[2];
+      }
+    }
   }
 }
 
@@ -175,14 +184,14 @@ void mouseReleased() {
     select.val = tiles[xSelect][ySelect].val;
   } else if (xSelect > -1 && ySelect > -1) {
     if (xSelect < tiles.length/2) {
-        tiles[xSelect][ySelect].pos.set(100 + xSelect * 100, height/2 - 250 + ySelect * 50);
-      } else {
-        tiles[xSelect][ySelect].pos.set(width - 500 + (xSelect - tiles.length/2) * 100, height/2 - 250 + ySelect * 50);
-      }
+      tiles[xSelect][ySelect].pos.set(100 + xSelect * 100, height/2 - 250 + ySelect * 50);
+    } else {
+      tiles[xSelect][ySelect].pos.set(width - 500 + (xSelect - tiles.length/2) * 100, height/2 - 250 + ySelect * 50);
+    }
   }
   if (xSelect > -1 && ySelect > -1) {
-    tiles[xSelect][ySelect].select = false;
-    tileGroup[xSelect][ySelect].select = false;
+    tiles[xSelect][ySelect].setSelect(false);
+    tileGroup[xSelect][ySelect].setSelect(false);
     xSelect = -1;
     ySelect = -1;
   }
@@ -199,16 +208,23 @@ int[] getTile(Tile[][] ta, Tile t) {
   return new int[] {-1, -1};
 }
 
-int[][] checkCorrect() {
-  ArrayList<Integer[]> output = new ArrayList<Integer[]>();
+ArrayList<int[]> checkCorrect() {
+  ArrayList<int[]> output = new ArrayList<int[]>();
   for (int x = 0; x < tileGroup.length; x++) {
     for (int y = 0; y < tileGroup[x].length; y++) {
       if (!tileGroup[x][y].val.equals(complete[x][y].val)) {
-        output.add(new Integer[] {x, y});
+        if ((tiles[x][y].pos.x > width/2 - 400 && tiles[x][y].pos.x < width/2 + 400 &&
+          tiles[x][y].pos.y > height/2 - 350 && tiles[x][y].pos.y < height/2 - 100) ||
+          (tiles[x][y].pos.x > width/2 - 400 && tiles[x][y].pos.x < width/2 + 400 &&
+          tiles[x][y].pos.y > height/2 + 100 && tiles[x][y].pos.y < height/2 + 350)) {
+          output.add(new int[] {x, y, color(255, 0, 0)});
+        }
+      } else {
+        output.add(new int[] {x, y, color(0, 255, 0)});
       }
     }
   }
-  return (int[][]) output.toArray();
+  return output;
 }
 
 String readLine(BufferedReader reader) {
