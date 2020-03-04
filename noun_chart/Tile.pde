@@ -47,6 +47,30 @@ class Tile {
     isSelected = set;
   }
 
+  void display() {
+    if (select) {
+      fill(c);
+      rect(mouseX, mouseY, 100, 50);
+      fill(0);
+      textSize(25);
+      text(getVal(), mouseX+15, mouseY+35);
+    } else {
+      fill(c);
+      rect(pos.x, pos.y, 100, 50);
+      fill(0);
+      textSize(25);
+      text(getVal(), pos.x+15, pos.y+35);
+    }
+  }
+
+  String toString() {
+    return getVal();
+  }
+
+  boolean equals(Tile other) {
+    return other.pos.x == this.pos.x && other.pos.y == this.pos.y && other.val.equals(this.val);
+  }
+  
   String getVal() {
     String output = "";
     int i = 0;
@@ -73,28 +97,13 @@ class Tile {
     }
     return output;
   }
-
-  void display() {
-    if (select) {
-      fill(c);
-      rect(mouseX, mouseY, 100, 50);
-      fill(0);
-      textSize(25);
-      text(getVal(), mouseX+15, mouseY+35);
-    } else {
-      fill(c);
-      rect(pos.x, pos.y, 100, 50);
-      fill(0);
-      textSize(25);
-      text(getVal(), pos.x+15, pos.y+35);
-    }
-  }
-
-  String toString() {
-    return getVal();
-  }
-
-  boolean equals(Tile other) {
-    return other.pos.x == this.pos.x && other.pos.y == this.pos.y && other.val.equals(this.val);
+  
+  String undoVal() {
+    val.replaceAll("ā", wordEnds[0]);
+    val.replaceAll("ē", wordEnds[1]);
+    val.replaceAll("ī", wordEnds[2]);
+    val.replaceAll("ō", wordEnds[3]);
+    val.replaceAll("ū", wordEnds[4]);
+    return val;
   }
 }

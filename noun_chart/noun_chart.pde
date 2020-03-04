@@ -34,19 +34,19 @@ void setup() {
     int i = 0;
     int ind = 0;
     while (i < line.length()) {
-      String c = "";
+      String s = "";
       for (int j = 0; j < 6; j++) {
         if (i+j < line.length()) {
           if (line.charAt(i+j) != TAB && line.charAt(i+j) != ENTER && line.charAt(i+j) != RETURN && line.charAt(i+j) != ';') {
-            c += line.charAt(i+j);
+            s += line.charAt(i+j);
           } else {
             i += j;
             break;
           }
         }
       }
-      if (c.indexOf(TAB) == -1 && c.indexOf(RETURN) == -1 && c.indexOf(ENTER) == -1 && c.indexOf(";") == -1) {
-        complete[ind][ty] = new Tile(c);
+      if (s.indexOf(TAB) == -1 && s.indexOf(RETURN) == -1 && s.indexOf(ENTER) == -1 && s.indexOf(";") == -1) {
+        complete[ind][ty] = new Tile(s);
         ind++;
       }
       i++;
@@ -158,8 +158,10 @@ void mouseReleased() {
     Tile select = tileGroup[(int) (mouseX - (width/2 - 400)) / 100][(int) (mouseY - (height/2 - 350)) / 50];
     if (select.val.equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
+      select.val = tiles[xSelect][ySelect].undoVal();
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
+      select.val = tiles[xSelect][ySelect].undoVal();
       int[] ind = getTile(tiles, select);
       if (ind[0] < tiles.length/2) {
         tiles[ind[0]][ind[1]].pos.set(100 + ind[0] * 100, height/2 - 250 + ind[1] * 50);
@@ -167,13 +169,15 @@ void mouseReleased() {
         tiles[ind[0]][ind[1]].pos.set(width - 500 + (ind[0] - tiles.length/2) * 100, height/2 - 250 + ind[1]*50);
       }
     }
-    select.val = tiles[xSelect][ySelect].val;
+    select.val = tiles[xSelect][ySelect].undoVal();
   } else if (mouseX > width/2 - 400 && mouseX < width/2 + 400 && mouseY > height/2 + 100 && mouseY < height/2 + 350 && xSelect > -1 && ySelect > -1) {
     Tile select = tileGroup[(int) (mouseX - (width/2 - 400)) / 100][(int) (mouseY - (height/2 + 100)) / 50 + tiles[0].length/2];
     if (select.val.equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
+      select.val = tiles[xSelect][ySelect].undoVal();
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
+      select.val = tiles[xSelect][ySelect].undoVal();
       int[] ind = getTile(tiles, select);
       if (ind[0] < tiles.length/2) {
         tiles[ind[0]][ind[1]].pos.set(100 + ind[0] * 100, height/2 - 250 + ind[1] * 50);
@@ -181,7 +185,6 @@ void mouseReleased() {
         tiles[ind[0]][ind[1]].pos.set(width - 500 + (ind[0] - tiles.length/2) * 100, height/2 - 250 + ind[1]*50);
       }
     }
-    select.val = tiles[xSelect][ySelect].val;
   } else if (xSelect > -1 && ySelect > -1) {
     if (xSelect < tiles.length/2) {
       tiles[xSelect][ySelect].pos.set(100 + xSelect * 100, height/2 - 250 + ySelect * 50);
@@ -212,15 +215,19 @@ ArrayList<int[]> checkCorrect() {
   ArrayList<int[]> output = new ArrayList<int[]>();
   for (int x = 0; x < tileGroup.length; x++) {
     for (int y = 0; y < tileGroup[x].length; y++) {
-      if (!tileGroup[x][y].val.equals(complete[x][y].val)) {
-        if ((tiles[x][y].pos.x > width/2 - 400 && tiles[x][y].pos.x < width/2 + 400 &&
-          tiles[x][y].pos.y > height/2 - 350 && tiles[x][y].pos.y < height/2 - 100) ||
-          (tiles[x][y].pos.x > width/2 - 400 && tiles[x][y].pos.x < width/2 + 400 &&
-          tiles[x][y].pos.y > height/2 + 100 && tiles[x][y].pos.y < height/2 + 350)) {
+      if ((tiles[x][y].pos.x >= width/2 - 400 && tiles[x][y].pos.x <= width/2 + 400 &&
+        tiles[x][y].pos.y >= height/2 - 350 && tiles[x][y].pos.y <= height/2 - 100) ||
+        (tiles[x][y].pos.x >= width/2 - 400 && tiles[x][y].pos.x <= width/2 + 400 &&
+        tiles[x][y].pos.y >= height/2 + 100 && tiles[x][y].pos.y <= height/2 + 350)) {
+        System.out.println("incp: " + tileGroup[x][y].undoVal());
+        System.out.println("cp: " + complete[x][y].undoVal());
+        if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
           output.add(new int[] {x, y, color(255, 0, 0)});
+        } else {
+          output.add(new int[] {x, y, color(0, 255, 0)});
         }
       } else {
-        output.add(new int[] {x, y, color(0, 255, 0)});
+        output.add(new int[] {x, y, color(255)});
       }
     }
   }
