@@ -129,17 +129,17 @@ void draw() {
 }
 
 void mousePressed() {
-  if (mouseX > options.getX(0) && mouseX < 500 && mouseY > height/2 - 250 && mouseY < height/2 + 250) {
-    xSelect = (mouseX - 100) / 100;
-    ySelect = (mouseY - (height/2 - 250)) / 50;
-    if (tiles[xSelect][ySelect].pos.x != (float) ((int) mouseX / 100) * 100 && tiles[xSelect][ySelect].pos.y != (float) ((int) mouseY / 50) * 50) {
+  if (mouseX > options.getX(0) && mouseX < options.getX(0) + options.getXLen() && mouseY > options.getY(0) && mouseY < options.getY(0) + options.getYLen()) {
+    xSelect = (mouseX - options.getX(0)) / Tile.xSize;
+    ySelect = (mouseY - options.getY(0)) / Tile.ySize;
+    if (tiles[xSelect][ySelect].pos.x != (float) ((int) mouseX / Tile.xSize) * Tile.xSize && tiles[xSelect][ySelect].pos.y != (float) ((int) mouseY / Tile.ySize) * Tile.ySize) {
       xSelect = -1;
       ySelect = -1;
     }
-  } else if (mouseX > width - 500 && mouseX < width - 100 && mouseY > height/2 - 250 && mouseY < height/2 + 250) {
-    xSelect = (mouseX - (width - 500)) / 100 + tiles.length / 2;
-    ySelect = (mouseY - (height/2 - 250)) / 50;
-    if (tiles[xSelect][ySelect].pos.x != (float) ((int) mouseX / 100) * 100 + 20 && tiles[xSelect][ySelect].pos.y != (float) ((int) mouseY / 50) * 50 - 10) {
+  } else if (mouseX > options.getX(1) && mouseX < options.getX(1) + options.getXLen() && mouseY > options.getY(1) && mouseY < options.getY(1) + options.getYLen()) {
+    xSelect = (mouseX - options.getX(1)) / Tile.xSize + tiles.length / 2;
+    ySelect = (mouseY - options.getY(1)) / Tile.ySize;
+    if (tiles[xSelect][ySelect].pos.x != (float) ((int) mouseX / Tile.xSize) * Tile.xSize + 20 && tiles[xSelect][ySelect].pos.y != (float) ((int) mouseY / Tile.ySize) * Tile.ySize - 10) {
       xSelect = -1;
       ySelect = -1;
     }
