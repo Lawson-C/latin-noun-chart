@@ -180,25 +180,25 @@ void mousePressed() {
 }
 
 void mouseReleased() {
-  if (mouseX > slots.getX(0) && mouseX < slots.getX(0) + slots.getXLen() && mouseY > slots.getYLen() && mouseY < slots.getY(0) + slots.getYLen() && xSelect > -1 && ySelect > -1) {
+  if (mouseX > slots.getX(0) && mouseX < slots.getX(0) + slots.getXLen() && mouseY > slots.getY(0) && mouseY < slots.getY(0) + slots.getYLen() && xSelect > -1 && ySelect > -1) {
     Tile select = tileGroup[(int) (mouseX - slots.getX(0)) / Tile.xSize][(int) (mouseY - slots.getY(0)) / Tile.ySize];
     if (select.val.equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.val = tiles[xSelect][ySelect].val;
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
       int[] ind = getTile(tiles, select);
+      System.out.println(ind[0] + ", " + ind[1]);
       if (ind[0] < tiles.length/2) {
-        tiles[ind[0]][ind[1]].pos.set(Tile.xSize + ind[0] * Tile.xSize, slots.getY(0) + ind[1] * Tile.ySize);
+        tiles[ind[0]][ind[1]].pos.set(options.getX(0) + ind[0] * Tile.xSize, options.getY(0) + ind[1] * Tile.ySize);
       } else {
-        tiles[ind[0]][ind[1]].pos.set(slots.getX(0) + (ind[0] - tiles.length/2) * Tile.ySize, height/2 - 250 + ind[1]*50);
+        tiles[ind[0]][ind[1]].pos.set(options.getX(1) + ind[0] * Tile.xSize, options.getY(1) + ind[1] * Tile.ySize);
       }
     }
-  } else if (mouseX > width/2 - 400 && mouseX < width/2 + 400 && mouseY > height/2 + 100 && mouseY < height/2 + 350 && xSelect > -1 && ySelect > -1) {
-    Tile select = tileGroup[(int) (mouseX - (width/2 - 400)) / 100][(int) (mouseY - (height/2 + 100)) / 50 + tiles[0].length/2];
+    select.val = tiles[xSelect][ySelect].val;
+  } else if (mouseX > slots.getX(1) && mouseX < slots.getX(1) + slots.getXLen() && mouseY > slots.getY(1) && mouseY < slots.getY(1) + slots.getYLen() && xSelect > -1 && ySelect > -1) {
+    Tile select = tileGroup[(int) (mouseX - slots.getX(1)) / Tile.xSize][(int) (mouseY - slots.getY(1)) / Tile.ySize];
     if (select.val.equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.val = tiles[xSelect][ySelect].undoVal();
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
       int[] ind = getTile(tiles, select);
@@ -208,6 +208,7 @@ void mouseReleased() {
         tiles[ind[0]][ind[1]].pos.set(width - 500 + (ind[0] - tiles.length/2) * 100, height/2 - 250 + ind[1]*50);
       }
     }
+    select.val = tiles[xSelect][ySelect].val;
   } else if (xSelect > -1 && ySelect > -1) {
     if (xSelect < tiles.length/2) {
       tiles[xSelect][ySelect].pos.set(100 + xSelect * 100, height/2 - 250 + ySelect * 50);
