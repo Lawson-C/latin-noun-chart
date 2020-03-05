@@ -1,5 +1,8 @@
 import java.io.*;
 
+TileBoard slots;
+TileBoard options;
+
 Tile[][] tileGroup = new Tile[8][10];
 Tile[][] complete = new Tile[8][10];
 Tile[][] tiles = new Tile[8][10];
@@ -15,6 +18,14 @@ boolean isSelected = false;
 
 void setup() {
   fullScreen();
+  slots = new TileBoard(width/2 - 4*Tile.xSize, 
+    height/2 - 100 - 5*Tile.ySize, 
+    width/2 - 4*Tile.xSize, 
+    height/2 + 100);
+  options = new TileBoard(100, 
+    height/2 - Tile.ySize*5, 
+    width - 5*Tile.xSize, 
+    height/2 - Tile.ySize*5);
   try {
     reader = new BufferedReader(new FileReader(endings));
   }
@@ -59,24 +70,41 @@ void setup() {
   for (int i = 0; i < 5; i++) {
     String str = readLine(endingReader);
     wordEnds[i] = str;
+    System.out.println(str);
   }
   reset(endingReader);
   for (int x = 0; x < tileGroup.length; x++) {
     for (int y = 0; y < tileGroup[x].length/2 + 1; y++) {
-      tileGroup[x][y] = new Tile(new PVector(width/2 - 400 + x * 100, height/2 - 350 + y * 50), "[ ]");
+      tileGroup[x][y] = new Tile(new PVector(slots.getX(0) + x * 100, slots.getY(0) + y * 50), "[ ]");
     }
     for (int y = tileGroup[x].length/2; y < tileGroup[x].length; y++) {
-      tileGroup[x][y] = new Tile(new PVector(width/2 - 400 + x * 100, height/2 + 100 + (y - tileGroup.length/2 - 1) * 50), "[ ]");
+      tileGroup[x][y] = new Tile(new PVector(slots.getX(1) + x * 100, slots.getY(1) + (y - tileGroup.length/2 - 1) * 50), "[ ]");
     }
   }
   for (int x = 0; x < tiles.length/2 + 1; x++) {
     for (int y = 0; y < tiles[x].length; y++) {
-      tiles[x][y] = new Tile(new PVector(100 + x*100, height/2 - 250 + y*50), complete[x][y].getVal());
+      tiles[x][y] = new Tile(new PVector(options.getX(0) + x*100, options.getY(0) + y*50), complete[x][y].getVal());
     }
   }
   for (int x = tiles.length/2; x < tiles.length; x++) {
     for (int y = 0; y < tiles[x].length; y++) {
-      tiles[x][y] = new Tile(new PVector(width - 500 + (x - tiles.length/2) * 100, height/2 - 250 + y*50), complete[x][y].getVal());
+      tiles[x][y] = new Tile(new PVector(options.getX(1) + (x - tiles.length/2) * 100, options.getY(1) + y*50), complete[x][y].getVal());
+    }
+  }
+  for (int x = 0; x < tiles.length; x++) {
+    for (int y = 0; y < tiles[x].length; y++) {
+      int randX = (int) random(0, tiles.length);
+      while (randX == x) {
+        randX = (int) random(0, tiles.length);
+      }
+      int randY = (int) random(0, tiles[x].length);
+      while (randY == y) {
+        randY = (int) random(0, tiles[x].length);
+      }
+      System.out.println("");
+      String temp = tiles[x][y].val;
+      tiles[x][y].val = tiles[randX][randY].val;
+      tiles[randX][randY].val = temp;
     }
   }
 }
@@ -101,7 +129,7 @@ void draw() {
 }
 
 void mousePressed() {
-  if (mouseX > 100 && mouseX < 500 && mouseY > height/2 - 250 && mouseY < height/2 + 250) {
+  if (mouseX > options.getX(0) && mouseX < 500 && mouseY > height/2 - 250 && mouseY < height/2 + 250) {
     xSelect = (mouseX - 100) / 100;
     ySelect = (mouseY - (height/2 - 250)) / 50;
     if (tiles[xSelect][ySelect].pos.x != (float) ((int) mouseX / 100) * 100 && tiles[xSelect][ySelect].pos.y != (float) ((int) mouseY / 50) * 50) {
@@ -143,12 +171,10 @@ void mousePressed() {
   if (xSelect > -1 && ySelect > -1) {
     tiles[xSelect][ySelect].setSelect(true);
   }
-  if (!isSelected) {
-    if (mouseX > width/2 - 100 && mouseX < width/2 + 100 && mouseY > height/2 - 50 && mouseY < height/2 + 50) {
-      ArrayList<int[]> incorrect = checkCorrect();
-      for (int i = 0; i < incorrect.size(); i++) {
-        tiles[incorrect.get(i)[0]][incorrect.get(i)[1]].c = incorrect.get(i)[2];
-      }
+  if (!isSelected && mouseX > width/2 - 100 && mouseX < width/2 + 100 && mouseY > height/2 - 50 && mouseY < height/2 + 50) {
+    ArrayList<int[]> incorrect = checkCorrect();
+    for (int i = 0; i < incorrect.size(); i++) {
+      tiles[incorrect.get(i)[0]][incorrect.get(i)[1]].c = incorrect.get(i)[2];
     }
   }
 }
@@ -158,10 +184,9 @@ void mouseReleased() {
     Tile select = tileGroup[(int) (mouseX - (width/2 - 400)) / 100][(int) (mouseY - (height/2 - 350)) / 50];
     if (select.val.equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.val = tiles[xSelect][ySelect].undoVal();
+      select.val = tiles[xSelect][ySelect].val;
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.val = tiles[xSelect][ySelect].undoVal();
       int[] ind = getTile(tiles, select);
       if (ind[0] < tiles.length/2) {
         tiles[ind[0]][ind[1]].pos.set(100 + ind[0] * 100, height/2 - 250 + ind[1] * 50);
@@ -169,7 +194,6 @@ void mouseReleased() {
         tiles[ind[0]][ind[1]].pos.set(width - 500 + (ind[0] - tiles.length/2) * 100, height/2 - 250 + ind[1]*50);
       }
     }
-    select.val = tiles[xSelect][ySelect].undoVal();
   } else if (mouseX > width/2 - 400 && mouseX < width/2 + 400 && mouseY > height/2 + 100 && mouseY < height/2 + 350 && xSelect > -1 && ySelect > -1) {
     Tile select = tileGroup[(int) (mouseX - (width/2 - 400)) / 100][(int) (mouseY - (height/2 + 100)) / 50 + tiles[0].length/2];
     if (select.val.equals("[ ]")) {
@@ -177,7 +201,6 @@ void mouseReleased() {
       select.val = tiles[xSelect][ySelect].undoVal();
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.val = tiles[xSelect][ySelect].undoVal();
       int[] ind = getTile(tiles, select);
       if (ind[0] < tiles.length/2) {
         tiles[ind[0]][ind[1]].pos.set(100 + ind[0] * 100, height/2 - 250 + ind[1] * 50);
@@ -219,8 +242,6 @@ ArrayList<int[]> checkCorrect() {
         tiles[x][y].pos.y >= height/2 - 350 && tiles[x][y].pos.y <= height/2 - 100) ||
         (tiles[x][y].pos.x >= width/2 - 400 && tiles[x][y].pos.x <= width/2 + 400 &&
         tiles[x][y].pos.y >= height/2 + 100 && tiles[x][y].pos.y <= height/2 + 350)) {
-        System.out.println("incp: " + tileGroup[x][y].undoVal());
-        System.out.println("cp: " + complete[x][y].undoVal());
         if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
           output.add(new int[] {x, y, color(255, 0, 0)});
         } else {

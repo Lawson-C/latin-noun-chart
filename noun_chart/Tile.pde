@@ -1,4 +1,5 @@
 class Tile {
+  static final int xSize = 100, ySize = 50;
   PVector pos;
   String val = "";
   color c = 255;
@@ -11,23 +12,19 @@ class Tile {
 
   Tile(float x, float y, String val) {
     this.val = val;
-    this.pos = new PVector();
-    this.pos.set(x, y);
+    this.pos = new PVector(x, y);
   }
 
   Tile(PVector pos, String val) {
-    this.pos = pos;
+    this.pos = new PVector();
+    this.pos.set(pos);
     this.val = val;
   }
 
   Tile(Tile other) {
-    this.val = other.getVal();
-    try {
-      this.pos.set(other.pos);
-    } 
-    catch (NullPointerException e) {
-      this.pos = new PVector(0, 0, 0);
-    }
+    this.val = other.val;
+    this.pos = new PVector();
+    this.pos.set(other.pos);
   }
 
   void setPos(PVector pos) {
@@ -35,7 +32,7 @@ class Tile {
   }
 
   void setPos(float x, float y) {
-    this.pos.set(x, y);
+      this.pos.set(x, y);
   }
 
   void setVal(String val) {
@@ -45,6 +42,11 @@ class Tile {
   void setSelect(boolean set) {
     this.select = set;
     isSelected = set;
+  }
+
+  void set(Tile t) {
+    this.val = t.val;
+    setPos(t.pos);
   }
 
   void display() {
@@ -70,7 +72,7 @@ class Tile {
   boolean equals(Tile other) {
     return other.pos.x == this.pos.x && other.pos.y == this.pos.y && other.val.equals(this.val);
   }
-  
+
   String getVal() {
     String output = "";
     int i = 0;
@@ -97,13 +99,31 @@ class Tile {
     }
     return output;
   }
-  
+
   String undoVal() {
-    val.replaceAll("ā", wordEnds[0]);
-    val.replaceAll("ē", wordEnds[1]);
-    val.replaceAll("ī", wordEnds[2]);
-    val.replaceAll("ō", wordEnds[3]);
-    val.replaceAll("ū", wordEnds[4]);
-    return val;
+    String output = "";
+    int i = 0;
+    while (i < this.val.length()) {
+      if (val.indexOf("ā") == i) {
+        output += wordEnds[0];
+        i++;
+      } else if (val.indexOf("ē") == i) {
+        output += wordEnds[1];
+        i++;
+      } else if (val.indexOf("ī") == i) {
+        output += wordEnds[2];
+        i++;
+      } else if (val.indexOf("ō") == i) {
+        output += wordEnds[3];
+        i++;
+      } else if (val.indexOf("ū") == i) {
+        output += wordEnds[4];
+        i++;
+      } else {
+        output += ""+val.charAt(i);
+      }
+      i++;
+    }
+    return output;
   }
 }
