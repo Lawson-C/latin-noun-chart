@@ -1,7 +1,7 @@
 class Tile {
   static final int xSize = 100, ySize = 50;
   PVector pos;
-  String val = "";
+  private String val = "";
   color c = 255;
   boolean select = false;
 
@@ -64,7 +64,7 @@ class Tile {
       text(getVal(), pos.x+15, pos.y+35);
     }
   }
-
+  
   String toString() {
     return getVal();
   }
@@ -72,6 +72,7 @@ class Tile {
   boolean equals(Tile other) {
     return other.pos.x == this.pos.x && other.pos.y == this.pos.y && other.val.equals(this.val);
   }
+
 
   String getVal() {
     String output = "";
@@ -119,7 +120,7 @@ class Tile {
       } else if (val.indexOf("ū") == i) {
         output += wordEnds[4];
         i++;
-      } else {
+      } else if (val.charAt(i) != TAB && val.charAt(i) != ENTER && val.charAt(i) != RETURN) {
         output += ""+val.charAt(i);
       }
       i++;

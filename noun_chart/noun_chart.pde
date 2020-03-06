@@ -107,7 +107,6 @@ void setup() {
       while (randY == y) {
         randY = (int) random(0, tiles[x].length);
       }
-      System.out.println("");
       String temp = tiles[x][y].val;
       tiles[x][y].val = tiles[randX][randY].val;
       tiles[randX][randY].val = temp;
@@ -190,8 +189,10 @@ void mouseReleased() {
     Tile select = tileGroup[(int) (mouseX - slots.getX(0)) / Tile.xSize][(int) (mouseY - slots.getY(0)) / Tile.ySize];
     if (select.val.equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
+      select.setVal(tiles[xSelect][ySelect].getVal());
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
+      select.setVal(tiles[xSelect][ySelect].getVal());
       int[] ind = getTile(tiles, select);
       System.out.println(ind[0] + ", " + ind[1]);
       if (ind[0] < tiles.length/2) {
@@ -200,13 +201,14 @@ void mouseReleased() {
         tiles[ind[0]][ind[1]].pos.set(options.getX(1) + (ind[0] - 4) * Tile.xSize, options.getY(1) + ind[1] * Tile.ySize);
       }
     }
-    select.val = tiles[xSelect][ySelect].val;
   } else if (mouseX > slots.getX(1) && mouseX < slots.getX(1) + slots.getXLen() && mouseY > slots.getY(1) && mouseY < slots.getY(1) + slots.getYLen() && xSelect > -1 && ySelect > -1) {
     Tile select = tileGroup[((int) mouseX - slots.getX(1)) / Tile.xSize][((int) mouseY - slots.getY(1)) / Tile.ySize + 5];
-    if (select.val.equals("[ ]")) {
+    if (select.getVal().equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
+      select.setVal(tiles[xSelect][ySelect].getVal());
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
+      select.setVal(tiles[xSelect][ySelect].getVal());
       int[] ind = getTile(tiles, select);
       if (ind[0] < tiles.length/2) {
         tiles[ind[0]][ind[1]].pos.set(options.getX(0) + ind[0] * Tile.xSize, options.getY(0) + ind[1] * Tile.ySize);
@@ -214,7 +216,6 @@ void mouseReleased() {
         tiles[ind[0]][ind[1]].pos.set(options.getX(1) + (ind[0] - 4) * Tile.xSize, options.getY(1) + ind[1] * Tile.ySize);
       }
     }
-    select.val = tiles[xSelect][ySelect].val;
   } else if (xSelect > -1 && ySelect > -1) {
     if (xSelect < tiles.length/2) {
       tiles[xSelect][ySelect].pos.set(options.getX(0) + xSelect * Tile.xSize, options.getY(0) + ySelect * Tile.ySize);
@@ -249,6 +250,8 @@ ArrayList<int[]> checkCorrect() {
         tiles[x][y].pos.y >= slots.getY(0) && tiles[x][y].pos.y < slots.getY(0) + slots.getYLen()) ||
         (tiles[x][y].pos.x >= slots.getX(1) && tiles[x][y].pos.x < slots.getX(1) + slots.getXLen() &&
         tiles[x][y].pos.y >= slots.getY(1) && tiles[x][y].pos.y < slots.getY(1) + slots.getYLen())) {
+        System.out.println(tileGroup[x][y].undoVal());
+        System.out.println(complete[x][y].undoVal());
         if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
           output.add(new int[] {x, y, color(255, 0, 0)});
         } else {
