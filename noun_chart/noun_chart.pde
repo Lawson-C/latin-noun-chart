@@ -263,9 +263,15 @@ ArrayList<int[]> checkCorrect() {
   for (int x = 0; x < tiles.length; x++) {
     for (int y = 0; y < tiles[x].length; y++) {
       output.add(new int[] {x, y, color(255)});
-      if (tileGroup[x][y].val.equals(complete[x][y].val)) {
-        int[] inds = getTile(tiles, tileGroup[x][y]);
-        
+      int[] inds = getTile(tiles, tileGroup[x][y]);
+      if (inds[0] > -1 && inds[1] > -1) {
+        if (tileGroup[x][y].val.equals(complete[x][y].val)) {
+          output.set(output.size() - 1, new int[] {inds[0], inds[1], color(0, 255, 0)});
+          System.out.println(inds[0] + ", " + inds[1]);
+        } else {
+          output.set(output.size() - 1, new int[] {inds[0], inds[1], color(255, 0, 0)});
+          System.out.println(inds[0] + ", " + inds[1]);
+        }
       }
     }
   }
