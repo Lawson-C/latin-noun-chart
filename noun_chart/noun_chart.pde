@@ -261,18 +261,11 @@ int[] getTile(Tile[][] ta, Tile t) {
 ArrayList<int[]> checkCorrect() {
   ArrayList<int[]> output = new ArrayList<int[]>();
   for (int x = 0; x < tiles.length; x++) {
-    for (int y = 0; y < tiles[x].length/2; y++) {
-      if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
-        output.add(new int[] {x, y, color(255, 0, 0)});
-      } else {
-        output.add(new int[] {x, y, color(0, 255, 0)});
-      }
-    }
-    for (int y = tiles[x].length/2; y < tiles[x].length; y++) {
-      if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
-        output.add(new int[] {x, y, color(255, 0, 0)});
-      } else {
-        output.add(new int[] {x, y, color(0, 255, 0)});
+    for (int y = 0; y < tiles[x].length; y++) {
+      output.add(new int[] {x, y, color(255)});
+      if (tileGroup[x][y].val.equals(complete[x][y].val)) {
+        int[] inds = getTile(tiles, tileGroup[x][y]);
+        
       }
     }
   }
