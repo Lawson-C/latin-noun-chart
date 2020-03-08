@@ -236,7 +236,7 @@ void mouseReleased() {
     if (xSelect < tiles.length/2) {
       tiles[xSelect][ySelect].pos.set(options.getX(0) + xSelect * Tile.xSize, options.getY(0) + ySelect * Tile.ySize);
     } else {
-      tiles[xSelect][ySelect].pos.set(options.getX(1) + xSelect * Tile.xSize, options.getY(1) + ySelect * Tile.ySize);
+      tiles[xSelect][ySelect].pos.set(options.getX(1) + (xSelect - tiles.length/2) * Tile.xSize, options.getY(1) + ySelect * Tile.ySize);
     }
   }
   if (xSelect > -1 && ySelect > -1) {
@@ -262,15 +262,13 @@ ArrayList<int[]> checkCorrect() {
   ArrayList<int[]> output = new ArrayList<int[]>();
   for (int x = 0; x < tiles.length; x++) {
     for (int y = 0; y < tiles[x].length; y++) {
-      output.add(new int[] {x, y, color(255)});
+      System.out.println(tileGroup[x][y].undoVal());
       int[] inds = getTile(tiles, tileGroup[x][y]);
       if (inds[0] > -1 && inds[1] > -1) {
-        if (tileGroup[x][y].val.equals(complete[x][y].val)) {
-          output.set(output.size() - 1, new int[] {inds[0], inds[1], color(0, 255, 0)});
-          System.out.println(inds[0] + ", " + inds[1]);
+        if (tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
+          output.add(new int[] {inds[0], inds[1], color(0, 255, 0)});
         } else {
-          output.set(output.size() - 1, new int[] {inds[0], inds[1], color(255, 0, 0)});
-          System.out.println(inds[0] + ", " + inds[1]);
+          output.add(new int[] {inds[0], inds[1], color(255, 0, 0)});
         }
       }
     }
