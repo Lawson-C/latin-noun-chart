@@ -19,9 +19,9 @@ boolean isSelected = false;
 void setup() {
   fullScreen();
   slots = new TileBoard(width/2 - 4*Tile.xSize, 
-    height/2 - 100 - 5*Tile.ySize, 
+    height/2 - 50 - 5*Tile.ySize, 
     width/2 - 4*Tile.xSize, 
-    height/2 + 100, 
+    height/2 + 50, 
     8, 
     5);
   options = new TileBoard(100, 
@@ -44,7 +44,7 @@ void setup() {
   catch (Exception e) {
     System.out.println("no file found line 13");
   }
-  
+
   // read ending files
   mark(reader, 357);
   String line = readLine(reader);
@@ -76,7 +76,7 @@ void setup() {
     ty++;
   }
   reset(reader);
-  
+
   // read conversion file
   mark(endingReader, 9);
   for (int i = 0; i < 5; i++) {
@@ -85,7 +85,7 @@ void setup() {
     System.out.println(str);
   }
   reset(endingReader);
-  
+
   // print out complete array
   for (int y = 0; y < complete[0].length; y++) {
     for (int x = 0; x < complete.length; x++) {
@@ -93,14 +93,14 @@ void setup() {
     }
     System.out.println();
   }
-  
+
   // fill other tiles
   for (int x = 0; x < tileGroup.length; x++) {
     for (int y = 0; y < tileGroup[x].length/2 + 1; y++) {
       tileGroup[x][y] = new Tile(new PVector(slots.getX(0) + x * Tile.xSize, slots.getY(0) + y * Tile.ySize), "[ ]");
     }
     for (int y = tileGroup[x].length/2; y < tileGroup[x].length; y++) {
-      tileGroup[x][y] = new Tile(new PVector(slots.getX(1) + x * Tile.xSize, slots.getY(1) + (y - tileGroup.length/2 - 1) * Tile.ySize), "[ ]");
+      tileGroup[x][y] = new Tile(new PVector(slots.getX(1) + x * Tile.xSize, slots.getY(1) + (y - tileGroup.length/2) * Tile.ySize), "[ ]");
     }
   }
   for (int x = 0; x < tiles.length/2 + 1; x++) {
@@ -113,7 +113,7 @@ void setup() {
       tiles[x][y] = new Tile(new PVector(options.getX(1) + (x - tiles.length/2) * Tile.xSize, options.getY(1) + y * Tile.ySize), complete[x][y].getVal());
     }
   }
-  
+
   // scramble tile selection group
   for (int x = 0; x < tiles.length; x++) {
     for (int y = 0; y < tiles[x].length; y++) {
@@ -260,13 +260,12 @@ int[] getTile(Tile[][] ta, Tile t) {
 
 ArrayList<int[]> checkCorrect() {
   ArrayList<int[]> output = new ArrayList<int[]>();
-  for (int x = 0; x < tileGroup.length; x++) {
-    for (int y = 0; y < tileGroup[x].length/2; y++) {
+  for (int x = 0; x < tiles.length; x++) {
+    for (int y = 0; y < tiles[x].length/2; y++) {
       if (tiles[x][y].pos.x >= slots.getX(0) && tiles[x][y].pos.x < slots.getX(0) + slots.getXLen() &&
         tiles[x][y].pos.y >= slots.getY(0) && tiles[x][y].pos.y < slots.getY(0) + slots.getYLen()) {
-        System.out.println(tileGroup[x][y].undoVal());
-        System.out.println(complete[x][y].undoVal());
-        if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
+        int[] corresponding = getTile(tileGroup, tiles[x][y]);
+        if (!tileGroup[corresponding[0]][corresponding[1]].undoVal().equals(complete[x][y].undoVal())) {
           output.add(new int[] {x, y, color(255, 0, 0)});
         } else {
           output.add(new int[] {x, y, color(0, 255, 0)});
@@ -275,12 +274,11 @@ ArrayList<int[]> checkCorrect() {
         output.add(new int[] {x, y, color(255)});
       }
     }
-    for (int y = tileGroup[x].length/2; y < tileGroup[x].length; y++) {
+    for (int y = tiles[x].length/2; y < tiles[x].length; y++) {
       if (tiles[x][y].pos.x >= slots.getX(1) && tiles[x][y].pos.x < slots.getX(1) + slots.getXLen() &&
         tiles[x][y].pos.y >= slots.getY(1) && tiles[x][y].pos.y < slots.getY(1) + slots.getYLen()) {
-        System.out.println(tileGroup[x][y].undoVal());
-        System.out.println(complete[x][y].undoVal());
-        if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
+        int[] corresponding = getTile(tileGroup, tiles[x][y]);
+        if (!tileGroup[corresponding[0]][corresponding[1]].undoVal().equals(complete[x][y].undoVal())) {
           output.add(new int[] {x, y, color(255, 0, 0)});
         } else {
           output.add(new int[] {x, y, color(0, 255, 0)});
