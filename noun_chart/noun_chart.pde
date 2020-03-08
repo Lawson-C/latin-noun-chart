@@ -44,6 +44,8 @@ void setup() {
   catch (Exception e) {
     System.out.println("no file found line 13");
   }
+  
+  // read ending files
   mark(reader, 357);
   String line = readLine(reader);
   int ty = 0;
@@ -63,6 +65,8 @@ void setup() {
         }
       }
       if (s.indexOf(TAB) == -1 && s.indexOf(RETURN) == -1 && s.indexOf(ENTER) == -1 && s.indexOf(";") == -1) {
+        System.out.println(ind + ", " + ty);
+        System.out.println(s);
         complete[ind][ty] = new Tile(s);
         ind++;
       }
@@ -72,11 +76,8 @@ void setup() {
     ty++;
   }
   reset(reader);
-  for (int x = 0; x < tileGroup.length; x++) {
-    for (int y = 0; y < tileGroup[x].length; y++) {
-      
-    }
-  }
+  
+  // read conversion file
   mark(endingReader, 9);
   for (int i = 0; i < 5; i++) {
     String str = readLine(endingReader);
@@ -84,6 +85,16 @@ void setup() {
     System.out.println(str);
   }
   reset(endingReader);
+  
+  // print out complete array
+  for (int y = 0; y < complete[0].length; y++) {
+    for (int x = 0; x < complete.length; x++) {
+      System.out.print(complete[x][y].getVal() + ", ");
+    }
+    System.out.println();
+  }
+  
+  // fill other tiles
   for (int x = 0; x < tileGroup.length; x++) {
     for (int y = 0; y < tileGroup[x].length/2 + 1; y++) {
       tileGroup[x][y] = new Tile(new PVector(slots.getX(0) + x * Tile.xSize, slots.getY(0) + y * Tile.ySize), "[ ]");
@@ -102,6 +113,8 @@ void setup() {
       tiles[x][y] = new Tile(new PVector(options.getX(1) + (x - tiles.length/2) * Tile.xSize, options.getY(1) + y * Tile.ySize), complete[x][y].getVal());
     }
   }
+  
+  // scramble tile selection group
   for (int x = 0; x < tiles.length; x++) {
     for (int y = 0; y < tiles[x].length; y++) {
       int randX = (int) random(0, tiles.length);
@@ -251,8 +264,8 @@ ArrayList<int[]> checkCorrect() {
     for (int y = 0; y < tileGroup[x].length/2; y++) {
       if (tiles[x][y].pos.x >= slots.getX(0) && tiles[x][y].pos.x < slots.getX(0) + slots.getXLen() &&
         tiles[x][y].pos.y >= slots.getY(0) && tiles[x][y].pos.y < slots.getY(0) + slots.getYLen()) {
-        System.out.println(tileGroup[x][y].getVal());
-        System.out.println(complete[x][y].getVal());
+        System.out.println(tileGroup[x][y].undoVal());
+        System.out.println(complete[x][y].undoVal());
         if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
           output.add(new int[] {x, y, color(255, 0, 0)});
         } else {
