@@ -262,29 +262,17 @@ ArrayList<int[]> checkCorrect() {
   ArrayList<int[]> output = new ArrayList<int[]>();
   for (int x = 0; x < tiles.length; x++) {
     for (int y = 0; y < tiles[x].length/2; y++) {
-      if (tiles[x][y].pos.x >= slots.getX(0) && tiles[x][y].pos.x < slots.getX(0) + slots.getXLen() &&
-        tiles[x][y].pos.y >= slots.getY(0) && tiles[x][y].pos.y < slots.getY(0) + slots.getYLen()) {
-        int[] corresponding = getTile(tileGroup, tiles[x][y]);
-        if (!tileGroup[corresponding[0]][corresponding[1]].undoVal().equals(complete[x][y].undoVal())) {
-          output.add(new int[] {x, y, color(255, 0, 0)});
-        } else {
-          output.add(new int[] {x, y, color(0, 255, 0)});
-        }
+      if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
+        output.add(new int[] {x, y, color(255, 0, 0)});
       } else {
-        output.add(new int[] {x, y, color(255)});
+        output.add(new int[] {x, y, color(0, 255, 0)});
       }
     }
     for (int y = tiles[x].length/2; y < tiles[x].length; y++) {
-      if (tiles[x][y].pos.x >= slots.getX(1) && tiles[x][y].pos.x < slots.getX(1) + slots.getXLen() &&
-        tiles[x][y].pos.y >= slots.getY(1) && tiles[x][y].pos.y < slots.getY(1) + slots.getYLen()) {
-        int[] corresponding = getTile(tileGroup, tiles[x][y]);
-        if (!tileGroup[corresponding[0]][corresponding[1]].undoVal().equals(complete[x][y].undoVal())) {
-          output.add(new int[] {x, y, color(255, 0, 0)});
-        } else {
-          output.add(new int[] {x, y, color(0, 255, 0)});
-        }
+      if (!tileGroup[x][y].undoVal().equals(complete[x][y].undoVal())) {
+        output.add(new int[] {x, y, color(255, 0, 0)});
       } else {
-        output.add(new int[] {x, y, color(255)});
+        output.add(new int[] {x, y, color(0, 255, 0)});
       }
     }
   }
