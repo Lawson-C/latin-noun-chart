@@ -63,6 +63,7 @@ void setup() {
         }
       }
       if (s.indexOf(TAB) == -1 && s.indexOf(RETURN) == -1 && s.indexOf(ENTER) == -1 && s.indexOf(";") == -1) {
+        System.out.println(s);
         complete[ind][ty] = new Tile(s);
         ind++;
       }
@@ -116,12 +117,15 @@ void setup() {
 
 void draw() {
   background(127);
-  for (Tile[] t1 : tileGroup) {
-    for (Tile t : t1) {
-      t.display();
+  for (Tile[] t : tiles) {
+    for (int i = 0; i < t.length/2; i++) {
+      t[i].display();
+    }
+    for (int i = t.length/2; i < t.length; i++) {
+      t[i].display();
     }
   }
-  for (Tile[] t1 : tiles) {
+  for (Tile[] t1 : tileGroup) {
     for (Tile t : t1) {
       t.display();
     }
@@ -153,7 +157,6 @@ void mousePressed() {
     ySelect = (mouseY - slots.getY(0)) / Tile.ySize;
     if (!tileGroup[xSelect][ySelect].val.equals("[ ]")) {
       int[] tileIndex = getTile(tiles, tileGroup[xSelect][ySelect]);
-      tileGroup[xSelect][ySelect].val = "[ ]";
       xSelect = tileIndex[0];
       ySelect = tileIndex[1];
     } else {
@@ -165,7 +168,6 @@ void mousePressed() {
     ySelect = (int) (mouseY - slots.getY(1)) / Tile.ySize + 5;
     if (!tileGroup[xSelect][ySelect].val.equals("[ ]")) {
       int[] tileIndex = getTile(tiles, tileGroup[xSelect][ySelect]);
-      tileGroup[xSelect][ySelect].val = "[ ]";
       xSelect = tileIndex[0];
       ySelect = tileIndex[1];
     } else {
@@ -189,10 +191,8 @@ void mouseReleased() {
     Tile select = tileGroup[(int) (mouseX - slots.getX(0)) / Tile.xSize][(int) (mouseY - slots.getY(0)) / Tile.ySize];
     if (select.val.equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.setVal(tiles[xSelect][ySelect].getVal());
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.setVal(tiles[xSelect][ySelect].getVal());
       int[] ind = getTile(tiles, select);
       System.out.println(ind[0] + ", " + ind[1]);
       if (ind[0] < tiles.length/2) {
@@ -205,10 +205,8 @@ void mouseReleased() {
     Tile select = tileGroup[((int) mouseX - slots.getX(1)) / Tile.xSize][((int) mouseY - slots.getY(1)) / Tile.ySize + 5];
     if (select.getVal().equals("[ ]")) {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.setVal(tiles[xSelect][ySelect].getVal());
     } else {
       tiles[xSelect][ySelect].pos.set(select.pos);
-      select.setVal(tiles[xSelect][ySelect].getVal());
       int[] ind = getTile(tiles, select);
       if (ind[0] < tiles.length/2) {
         tiles[ind[0]][ind[1]].pos.set(options.getX(0) + ind[0] * Tile.xSize, options.getY(0) + ind[1] * Tile.ySize);

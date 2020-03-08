@@ -27,12 +27,18 @@ class Tile {
     this.pos.set(other.pos);
   }
 
+  void setTile(Tile[][] g, int xL, int yL, int xM, int yM) {
+    if (pos.x >= xL && pos.x < xM && pos.y >= yL && pos.y < yM) {
+      g[(int) (pos.x - xL) / Tile.xSize][(int) (pos.y - yL) / Tile.ySize].setVal(val);
+    }
+  }
+
   void setPos(PVector pos) {
     setPos(pos.x, pos.y);
   }
 
   void setPos(float x, float y) {
-      this.pos.set(x, y);
+    this.pos.set(x, y);
   }
 
   void setVal(String val) {
@@ -64,7 +70,7 @@ class Tile {
       text(getVal(), pos.x+15, pos.y+35);
     }
   }
-  
+
   String toString() {
     return getVal();
   }
