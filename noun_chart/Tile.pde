@@ -30,9 +30,10 @@ class Tile {
   void setTile(Tile[][] g, int xL, int yL, int xM, int yM) {
     if (pos.x >= xL && pos.x < xM && pos.y >= yL && pos.y < yM) {
       if (select) {
-        g[(int) (pos.x - xL) / Tile.xSize][(int) (pos.y - yL) / Tile.ySize].setVal("[ ]");
+        System.out.println();
+        g[((int) pos.x - xL) / Tile.xSize][((int) pos.y - yL) / Tile.ySize].setVal("[ ]");
       } else {
-        g[(int) (pos.x - xL) / Tile.xSize][(int) (pos.y - yL) / Tile.ySize].setVal(val);
+        g[((int) pos.x - xL) / Tile.xSize][((int) pos.y - yL) / Tile.ySize].setVal(val);
       }
     }
   }
