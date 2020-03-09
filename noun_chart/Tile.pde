@@ -1,39 +1,39 @@
 class Tile {
   static final int xSize = 100, ySize = 50;
   PVector pos;
+  PVector prevSelect;
   private String val = "";
   color c = 255;
   boolean select = false;
 
   Tile(String val) {
-    this.val = val;
-    this.pos = new PVector(0, 0, 0);
+    this(0.0, 0.0, val);
   }
 
   Tile(float x, float y, String val) {
     this.val = val;
     this.pos = new PVector(x, y);
+    this.prevSelect = new PVector(-1, -1);
   }
 
   Tile(PVector pos, String val) {
-    this.pos = new PVector();
-    this.pos.set(pos);
-    this.val = val;
+    this(pos.x, pos.y, val);
   }
 
   Tile(Tile other) {
-    this.val = other.val;
-    this.pos = new PVector();
-    this.pos.set(other.pos);
+    this(other.pos, other.val);
   }
 
-  void setTile(Tile[][] g, int xL, int yL, int xM, int yM) {
+  void setTile(Tile[][] g, int xL, int yL, int xM, int yM, boolean isSecond) {
     if (pos.x >= xL && pos.x < xM && pos.y >= yL && pos.y < yM) {
-      if (select) {
-        System.out.println();
-        g[((int) pos.x - xL) / Tile.xSize][((int) pos.y - yL) / Tile.ySize].setVal("[ ]");
+      if (!select) {
+        if (isSecond) {
+          prevSelect.set((pos.x - xL) / Tile.xSize, (pos.y - yL) / Tile.ySize + 5);
+        }
       } else {
-        g[((int) pos.x - xL) / Tile.xSize][((int) pos.y - yL) / Tile.ySize].setVal(val);
+        prevSelect.set(pos.x - xL, pos.y - yL);
+        g[(int) prevSelect.x][(int) prevSelect.y].val = "[ ]";
+        prevSelect.set(-1, -1);
       }
     }
   }
@@ -77,7 +77,7 @@ class Tile {
   }
 
   String toString() {
-    return getVal();
+    return undoVal();
   }
 
   boolean equals(Tile other) {
