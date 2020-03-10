@@ -28,6 +28,8 @@ class TileBoard {
   String toString() {
     return "{ x: { " + this.x[0] + ", " + this.x[1] + " }, y: { "
       + this.y[0] + ", " + this.y[1] + " } }, { xLen: "
-      + this.xLen + ", yLen: " + yLen + " }";
+      + this.xLen + ", yLen: " + yLen + " }, { { "
+      + (this.getX(0) + this.xLen) + " and " + (this.getX(1) + this.xLen) + " }, { "
+      + (this.getY(0) + this.yLen) + " and " + (this.getY(1) + this.xLen) + " } }";
   }
 }

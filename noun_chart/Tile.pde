@@ -27,12 +27,13 @@ class Tile {
   void setTile(Tile[][] g, int xL, int yL, int xM, int yM, boolean isSecond) {
     if (pos.x >= xL && pos.x < xM && pos.y >= yL && pos.y < yM) {
       if (!select) {
+        prevSelect.set((pos.x - xL) / Tile.xSize, (pos.y - yL) / Tile.ySize);
         if (isSecond) {
-          prevSelect.set((pos.x - xL) / Tile.xSize, (pos.y - yL) / Tile.ySize + 5);
+          prevSelect.y += 5;
         }
-      } else {
-        prevSelect.set(pos.x - xL, pos.y - yL);
-        g[(int) prevSelect.x][(int) prevSelect.y].val = "[ ]";
+        g[(int) prevSelect.x][(int) prevSelect.y].setVal(undoVal());
+      } else if (prevSelect.x > -1 && prevSelect.y > -1) {
+        g[(int) prevSelect.x][(int) prevSelect.y].setVal("[ ]");
         prevSelect.set(-1, -1);
       }
     }
