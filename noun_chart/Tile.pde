@@ -24,7 +24,21 @@ class Tile {
     this(other.pos, other.val);
   }
 
-  void setTile(Tile[][] g, int xL, int yL, int xM, int yM, boolean isSecond) {
+  void setTile(Tile[][] g, int xLo, int yLo, int xMa, int yMa, int xLo2, int yLo2, int xMa2, int yMa2) {
+    boolean isSecond = pos.x >= xLo2 && pos.x < xMa2 && pos.y >= yLo2 && pos.y < yMa2;
+    int xL, xM;
+    int yL, yM;
+    if (!isSecond) {
+      xL = xLo;
+      yL = yLo;
+      xM = xMa;
+      yM = yMa;
+    } else {
+      xL = xLo2;
+      yL = yLo2;
+      xM = xMa2; //<>//
+      yM = yMa2;
+    }
     if (pos.x >= xL && pos.x < xM && pos.y >= yL && pos.y < yM) {
       if (!select) {
         prevSelect.set((pos.x - xL) / Tile.xSize, (pos.y - yL) / Tile.ySize);
@@ -32,10 +46,10 @@ class Tile {
           prevSelect.y += 5;
         }
         g[(int) prevSelect.x][(int) prevSelect.y].setVal(undoVal());
-      } else if (prevSelect.x > -1 && prevSelect.y > -1) {
-        g[(int) prevSelect.x][(int) prevSelect.y].setVal("[ ]");
-        prevSelect.set(-1, -1);
       }
+    } else if (prevSelect.x > -1 && prevSelect.y > -1) {
+      g[(int) prevSelect.x][(int) prevSelect.y].setVal("[ ]");
+      prevSelect.set(-1, -1);
     }
   }
 
@@ -63,8 +77,9 @@ class Tile {
 
   void display() {
     if (select) {
+      pos.set(mouseX, mouseY);
       fill(c);
-      rect(mouseX, mouseY, 100, 50);
+      rect(pos.x, pos.y, 100, 50);
       fill(0);
       textSize(25);
       text(getVal(), mouseX+15, mouseY+35);
@@ -78,13 +93,13 @@ class Tile {
   }
 
   String toString() {
-    return undoVal();
+    return getVal();
   }
 
   boolean equals(Tile other) {
-    return other.pos.x == this.pos.x && other.pos.y == this.pos.y && other.val.equals(this.val);
+    boolean out = other.pos.x == this.pos.x && other.pos.y == this.pos.y && other.undoVal().equals(this.undoVal());
+    return out;
   }
-
 
   String getVal() {
     String output = "";
@@ -132,7 +147,7 @@ class Tile {
       } else if (val.indexOf("ū") == i) {
         output += wordEnds[4];
         i++;
-      } else if (val.charAt(i) != TAB && val.charAt(i) != ENTER && val.charAt(i) != RETURN) {
+      } else if (val.charAt(i) != ENTER && val.charAt(i) != RETURN) {
         output += ""+val.charAt(i);
       }
       i++;
