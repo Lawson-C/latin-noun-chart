@@ -18,9 +18,9 @@ boolean isSelected = false;
 
 void setup() {
   fullScreen();
-  slots = new TileBoard(width/2 - 4*Tile.xSize, 
+  slots = new TileBoard(width/2 - (int) (3.5 * (float) Tile.xSize), 
     height/2 - 50 - 5*Tile.ySize, 
-    width/2 - 4*Tile.xSize, 
+    width/2 - (int) (3.5 * (float) Tile.xSize), 
     height/2 + 50, 
     8, 
     5);
@@ -121,16 +121,27 @@ void setup() {
 
 void draw() {
   background(127);
-  for (Tile[] t1 : tileGroup) {
-    for (Tile t : t1) {
+  for (int x = 0; x < tileGroup.length; x++) {
+    String[] xNames = { "1st", "2nd", "2nd N", "3rd", "3rd N", "4th", "4th N", "5th" };
+    String[] yNames = { "Nom", "Gen", "Dat", "Acc", "Abl" };
+    fill(0);
+    textSize(25);
+    text(xNames[x], tileGroup[x][0].pos.x + Tile.xSize/10, tileGroup[x][0].pos.y - Tile.ySize/5);
+    for (int y = 0; y < tileGroup[x].length; y++) {
+      Tile t = tileGroup[x][y];
+      if (x == 0) {
+        fill(0);
+        textSize(25);
+        text(yNames[y - ((int) y / (tileGroup[x].length / 2) * tileGroup[x].length / 2)], t.pos.x - (2 * Tile.xSize / 3), t.pos.y + (5 * Tile.ySize / 6));
+      }
       t.display();
     }
   }
   for (int x = 0; x < tiles.length; x++) {
     for (int y = 0; y < tiles[x].length; y++) {
-      tiles[x][y].setTile(tileGroup,
-      slots.getX(0), slots.getY(0), slots.getX(0) + slots.getXLen(), slots.getY(0) + slots.getYLen(),
-      slots.getX(1), slots.getY(1), slots.getX(1) + slots.getXLen(), slots.getY(1) + slots.getYLen());
+      tiles[x][y].setTile(tileGroup, 
+        slots.getX(0), slots.getY(0), slots.getX(0) + slots.getXLen(), slots.getY(0) + slots.getYLen(), 
+        slots.getX(1), slots.getY(1), slots.getX(1) + slots.getXLen(), slots.getY(1) + slots.getYLen());
       tiles[x][y].display();
     }
   }
@@ -269,12 +280,6 @@ ArrayList<int[]> checkCorrect() {
         }
       }
     }
-  }
-  for (int x = 0; x < output.size(); x++) {
-    for (int y = 0; y < output.get(x).length; y++) {
-      System.out.println(output.get(x)[y]);
-    }
-    System.out.println();
   }
   return output;
 }

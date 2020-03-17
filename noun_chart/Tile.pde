@@ -39,6 +39,10 @@ class Tile {
       xM = xMa2; //<>//
       yM = yMa2;
     }
+    if (prevSelect.x > -1 && prevSelect.y > -1 && pos.x/10 != (int) prevSelect.x/10 && pos.y/10 != (int) prevSelect.y/10) {
+      g[(int) prevSelect.x][(int) prevSelect.y].setVal("[ ]");
+      prevSelect.set(-1, -1);
+    }
     if (pos.x >= xL && pos.x < xM && pos.y >= yL && pos.y < yM) {
       if (!select) {
         prevSelect.set((pos.x - xL) / Tile.xSize, (pos.y - yL) / Tile.ySize);
